@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                                             bundle.putString("homeScore", homeScore);
                                             bundle.putString("awayScore", awayScore);
                                             bundle.putString("homeGoalDetails", homeGoalDetails);
-                                            bundle.putString("awayGoalDeails", awayGoalDetails);
+                                            bundle.putString("awayGoalDetails", awayGoalDetails);
                                             bundle.putString("idHomeTeam", homeTeamId);
                                             MatchFragment fragment = new MatchFragment();
                                             fragment.setArguments(bundle);

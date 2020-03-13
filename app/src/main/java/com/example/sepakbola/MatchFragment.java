@@ -23,10 +23,6 @@ public class MatchFragment extends Fragment {
     private String awayGoalDetails;
     private String idHomeTeam;
 
-    public void OnClick(View view){
-
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.match_fragment, container, false);
