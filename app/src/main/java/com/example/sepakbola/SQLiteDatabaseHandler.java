@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class SQLiteDatabaseHandler extends SQLiteOpenHelper {
-    private static  final int DATABASE_VERSION = 3;
+    private  static  final int DATABASE_VERSION = 3;
     private  static  final String DATABASE_NAME = "scheduleDB";
     private  static  final String TABLE_NAME = "schedule";
     private  static  final String KEY_ID = "id";
@@ -22,7 +22,8 @@ public class SQLiteDatabaseHandler extends SQLiteOpenHelper {
     private  static  final String KEY_GOALHOMEDETAILS = "goalHomeDetails";
     private  static  final String KEY_GOALAWAYDETAILS = "goalAwayDetails";
     private  static  final String KEY_HOMETEAMID = "homeTeamId";
-    private  static  final String[] COLUMNS = {KEY_ID, KEY_HOME, KEY_AWAY, KEY_HOMESCORE, KEY_AWAYSCORE, KEY_DATE,   KEY_GOALHOMEDETAILS, KEY_GOALAWAYDETAILS, KEY_HOMETEAMID};
+    private  static  final String KEY_AWAYTEAMID = "awayTeamId";
+    private  static  final String[] COLUMNS = {KEY_ID, KEY_HOME, KEY_AWAY, KEY_HOMESCORE, KEY_AWAYSCORE, KEY_DATE,   KEY_GOALHOMEDETAILS, KEY_GOALAWAYDETAILS, KEY_HOMETEAMID, KEY_AWAYTEAMID};
 
     public SQLiteDatabaseHandler(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -32,7 +33,7 @@ public class SQLiteDatabaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db){
         String CREATION_TABLE = "CREATE TABLE Schedule ( "
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT, " + "home TEXT, "
-                + "away TEXT, " + "homeScore INTEGER, " + "awayScore  INTEGER, " + "date TEXT, " + "goalHomeDetails TEXT, " + "goalAwayDetails TEXT, " + "homeTeamId TEXT)";
+                + "away TEXT, " + "homeScore INTEGER, " + "awayScore  INTEGER, " + "date TEXT, " + "goalHomeDetails TEXT, " + "goalAwayDetails TEXT, " + "homeTeamId TEXT, " + "awayTeamId TEXT)";
         db.execSQL(CREATION_TABLE);
     }
 
@@ -52,6 +53,7 @@ public class SQLiteDatabaseHandler extends SQLiteOpenHelper {
         contentValues.put(KEY_GOALHOMEDETAILS, schedule.getGoalHomeDetails());
         contentValues.put(KEY_GOALAWAYDETAILS, schedule.getGoalAwayDetails());
         contentValues.put(KEY_HOMETEAMID, schedule.getHomeTeamId());
+        contentValues.put(KEY_AWAYTEAMID, schedule.getAwayTeamId());
         db.insert(TABLE_NAME, null,contentValues);
         db.close();
     }
@@ -65,7 +67,7 @@ public class SQLiteDatabaseHandler extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()){
             do{
-                schedule = new Schedule(cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getString(8));
+                schedule = new Schedule(cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5), cursor.getString(6), cursor.getString(7), cursor.getString(8), cursor.getString(9));
                 schedules.add(schedule);
             }while(cursor.moveToNext());
         }

@@ -38,7 +38,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private JSONArray array;
     private SQLiteDatabaseHandler db;
-    String homeTeamId;
+    String homeTeamId, awayTeamId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
                                         String homeGoalDetails = event.getString("strHomeGoalDetails");
                                         String awayGoalDetails = event.getString("strAwayGoalDetails");
                                         homeTeamId = event.getString("idHomeTeam");
+                                        awayTeamId = event.getString("idAwayTeam");
                                         String quer = "https://thesportsdb.com/api/v1/json/1/lookupteam.php?id="+homeTeamId;
                                         JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, quer, null, new Response.Listener<JSONObject>(){
 
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                                                 Log.d("help", error.getMessage());
                                             }
                                         });
-                                        Schedule schedule = new Schedule(home, away, homeScore, awayScore, date, homeGoalDetails, awayGoalDetails, homeTeamId);
+                                        Schedule schedule = new Schedule(home, away, homeScore, awayScore, date, homeGoalDetails, awayGoalDetails, homeTeamId, awayTeamId);
                                         db.insertData(schedule);
                                         if (i < 10) {
                                             Bundle bundle = new Bundle();
@@ -102,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
                                             bundle.putString("homeGoalDetails", homeGoalDetails);
                                             bundle.putString("awayGoalDetails", awayGoalDetails);
                                             bundle.putString("idHomeTeam", homeTeamId);
+                                            bundle.putString("idAwayTeam", awayTeamId);
                                             MatchFragment fragment = new MatchFragment();
                                             fragment.setArguments(bundle);
                                             fragmentTransaction.add(R.id.layout_home, fragment);
@@ -138,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
                         bundle.putString("homeGoalDetails", schedules.get(i).getGoalHomeDetails());
                         bundle.putString("awayGoalDetails", schedules.get(i).getGoalAwayDetails());
                         bundle.putString("idHomeTeam", schedules.get(i).getHomeTeamId());
+                        bundle.putString("idAwayTeam", schedules.get(i).getAwayTeamId());
                         MatchFragment fragment = new MatchFragment();
                         fragment.setArguments(bundle);
                         fragmentTransaction.add(R.id.layout_home, fragment);
@@ -179,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
                             String homeGoalDetails = event.getString("strHomeGoalDetails");
                             String awayGoalDetails = event.getString("strAwayGoalDetails");
                             String homeTeamId = event.getString("idHomeTeam");
+                            String awayTeamId = event.getString("idAwayTeam");
                             if (home.toLowerCase().contains(text) || away.toLowerCase().contains(text) || date.toLowerCase().contains(text) || homeScore.toLowerCase().contains(text) || awayScore.toLowerCase().contains(text)) {
                                 Bundle bundle = new Bundle();
                                 bundle.putString("home", home);
@@ -189,6 +193,7 @@ public class MainActivity extends AppCompatActivity {
                                 bundle.putString("homeGoalDetails", homeGoalDetails);
                                 bundle.putString("awayGoalDeails", awayGoalDetails);
                                 bundle.putString("idHomeTeam", homeTeamId);
+                                bundle.putString("idAwayTeam", awayTeamId);
                                 MatchFragment fragment = new MatchFragment();
                                 fragment.setArguments(bundle);
                                 fragmentTransaction.add(R.id.layout_home, fragment);
@@ -210,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
                         String homeGoalDetails = schedules.get(i).getGoalHomeDetails();
                         String awayGoalDetails = schedules.get(i).getGoalHomeDetails();
                         String homeTeamId = schedules.get(i).getHomeTeamId();
+                        String awayTeamId = schedules.get(i).getAwayTeamId();
                         if (home.toLowerCase().contains(text) || away.toLowerCase().contains(text) || date.toLowerCase().contains(text) || homeScore.toLowerCase().contains(text) || awayScore.toLowerCase().contains(text)) {
                             Bundle bundle = new Bundle();
                             bundle.putString("home", home);
@@ -220,6 +226,7 @@ public class MainActivity extends AppCompatActivity {
                             bundle.putString("homeGoalDetails", homeGoalDetails);
                             bundle.putString("awayGoalDeails", awayGoalDetails);
                             bundle.putString("idHomeTeam", homeTeamId);
+                            bundle.putString("idAwayTeam", awayTeamId);
                             MatchFragment fragment = new MatchFragment();
                             fragment.setArguments(bundle);
                             fragmentTransaction.add(R.id.layout_home, fragment);

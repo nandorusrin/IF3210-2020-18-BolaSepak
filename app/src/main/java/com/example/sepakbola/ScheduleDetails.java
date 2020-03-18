@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -16,6 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,6 +31,7 @@ public class ScheduleDetails extends AppCompatActivity {
     private String homeScore;
     private String awayScore;
     private String idHomeTeam;
+    private String idAwayTeam;
     JSONArray array;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +43,8 @@ public class ScheduleDetails extends AppCompatActivity {
         TextView textView = (TextView) findViewById(R.id.textView);
         TextView textView2 = (TextView) findViewById(R.id.textView2);
         TextView textView3 = (TextView) findViewById(R.id.textView3);
-
+        final ImageView imageView3 = (ImageView) findViewById(R.id.imageView3);
+        final ImageView imageView4 = (ImageView) findViewById(R.id.imageView4);
         if (intent != null){
             home = intent.getStringExtra("home");
             away = intent.getStringExtra("away");
@@ -48,6 +52,7 @@ public class ScheduleDetails extends AppCompatActivity {
             homeScore = intent.getStringExtra("homeScore");
             awayScore = intent.getStringExtra("awayScore");
             idHomeTeam = intent.getStringExtra("idHomeTeam");
+            idAwayTeam = intent.getStringExtra("idAwayTeam");
             String[] homeGoalDetails = intent.getStringArrayExtra("homeGoalDetails");
             String[] awayGoalDetails = intent.getStringArrayExtra("awayGoalDetails");
             textView6.setText(home);
@@ -75,12 +80,49 @@ public class ScheduleDetails extends AppCompatActivity {
                 LinearLayout linearLayout = (LinearLayout) findViewById(R.id.layout_away_score);
                 linearLayout.addView(textView1);
             }
-            String url = "http://api.openweathermap.org/data/2.5/weather?q=" + idHomeTeam+ "&appid=4eb4a3899792b9b411d4388ea0af6916";
-            final RequestQueue queue = Volley.newRequestQueue(this);
 
+            final RequestQueue queue = Volley.newRequestQueue(this);
+            String urlHome = "https://thesportsdb.com/api/v1/json/1/lookupteam.php?id=" + idHomeTeam;
+            String urlAway = "https://thesportsdb.com/api/v1/json/1/lookupteam.php?id=" + idAwayTeam;
+            String urlWeather = "http://api.openweathermap.org/data/2.5/weather?q=" + idHomeTeam+ "&appid=4eb4a3899792b9b411d4388ea0af6916";
+            // Request for home team logo
+            JsonObjectRequest homeTeamObject = new JsonObjectRequest(Request.Method.GET, urlHome, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        JSONArray teamArr = response.getJSONArray("teams");
+                        Picasso.get().load(teamArr.getJSONObject(0).getString("strTeamLogo")).into(imageView3);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.d("VolleyError", "onErrorResponse: " + error);
+                }
+            });
+            // Request for away team logo
+            JsonObjectRequest awayTeamObject = new JsonObjectRequest(Request.Method.GET, urlAway, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        JSONArray teamArr = response.getJSONArray("teams");
+                        Picasso.get().load(teamArr.getJSONObject(0).getString("strTeamLogo")).into(imageView4);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.d("VolleyError", "onErrorResponse: " + error);
+                }
+            });
+            // Request for weather
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                     Request.Method.GET,
-                    url,
+                    urlWeather,
                     null,
                     new Response.Listener<JSONObject>() {
                         @Override
@@ -102,6 +144,9 @@ public class ScheduleDetails extends AppCompatActivity {
                         }
                     }
             );
+            // Add object requests to volley requests queue
+            queue.add(homeTeamObject);
+            queue.add(awayTeamObject);
             queue.add(jsonObjectRequest);
         }
     }

@@ -9,8 +9,9 @@ public class Schedule {
     private String goalHomeDetails;
     private String goalAwayDetails;
     private String homeTeamId;
+    private String awayTeamId;
 
-    public Schedule(String home, String away, String homeScore, String awayScore, String date, String goalHomeDetails, String goalAwayDetails, String homeTeamId){
+    public Schedule(String home, String away, String homeScore, String awayScore, String date, String goalHomeDetails, String goalAwayDetails, String homeTeamId, String awayTeamId){
         this.home = home;
         this.away = away;
         this.awayScore = awayScore;
@@ -19,10 +20,14 @@ public class Schedule {
         this.goalHomeDetails = goalHomeDetails;
         this.goalAwayDetails = goalAwayDetails;
         this.homeTeamId = homeTeamId;
+        this.awayTeamId = awayTeamId;
     }
 
     public String getHomeTeamId(){
         return this.homeTeamId;
+    }
+    public String getAwayTeamId() {
+        return this.awayTeamId;
     }
 
     public String getHome() {
