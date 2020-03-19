@@ -320,7 +320,9 @@ public class MainActivity extends AppCompatActivity {
                                         fragment.setArguments(bundle);
                                         if (rightCol >= leftCol) {
                                             fragmentTransaction.add(R.id.layout_col_left, fragment);
+                                            leftCol++;
                                         }else if (leftCol > rightCol){
+                                            rightCol++;
                                             fragmentTransaction.add(R.id.layout_col_right, fragment);
                                         }
                                     }
@@ -357,8 +359,10 @@ public class MainActivity extends AppCompatActivity {
                                     MatchFragment fragment = new MatchFragment(queue);
                                     fragment.setArguments(bundle);
                                     if (rightCol >= leftCol) {
+                                        leftCol++;
                                         fragmentTransaction.add(R.id.layout_col_left, fragment);
                                     }else if (leftCol > rightCol){
+                                        rightCol++;
                                         fragmentTransaction.add(R.id.layout_col_right, fragment);
                                     }
                                 }
