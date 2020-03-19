@@ -43,6 +43,9 @@ public class MatchFragment extends Fragment {
     public MatchFragment(RequestQueue _requestQueue){
         requestQueue = _requestQueue;
     }
+    public  MatchFragment(){
+
+    }
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -139,8 +142,10 @@ public class MatchFragment extends Fragment {
                             Log.d("VolleyError", "onErrorResponse: " + error);
                         }
                     });
-                    requestQueue.add(homeTeamObject);
-                    requestQueue.add(awayTeamObject);
+                    if (requestQueue != null) {
+                        requestQueue.add(homeTeamObject);
+                        requestQueue.add(awayTeamObject);
+                    }
                 }
             }
         }

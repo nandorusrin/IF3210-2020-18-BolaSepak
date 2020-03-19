@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
                                                     });
                                             Schedule schedule = new Schedule(home, away, homeScore, awayScore, date, homeGoalDetails, awayGoalDetails, homeTeamId, awayTeamId);
                                             db.insertData(schedule);
-                                            if (i < array.length()/2) {
+                                            if (i < 10 && i % 2 == 1) {
                                                 Bundle bundle = new Bundle();
                                                 bundle.putString("home", home);
                                                 bundle.putString("away", away);
@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
                                                 MatchFragment fragment = new MatchFragment(queue);
                                                 fragment.setArguments(bundle);
                                                 fragmentTransaction.add(R.id.layout_col_left, fragment);
-                                            }else{
+                                            }else if (i < 10){
                                                 Bundle bundle = new Bundle();
                                                 bundle.putString("home", home);
                                                 bundle.putString("away", away);
@@ -269,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             }
-        }
+
         setContentView(R.layout.activity_main);
         TextView textView = (TextView) findViewById(R.id.numberOfSteps);
         String txt = "Number of steps: " + Sensor.TYPE_STEP_COUNTER;
@@ -289,22 +289,60 @@ public class MainActivity extends AppCompatActivity {
                 for (Fragment fragment : getSupportFragmentManager().getFragments()) {
                     getSupportFragmentManager().beginTransaction().remove(fragment).commit();
                 }
-                if (text != "") {
-                    if (connected) {
-                        try {
+                    if (text != "" && array != null) {
+                        if (connected) {
+                            try {
+                                int leftCol = 0;
+                                int rightCol = 1;
+                                for (int i = 0; i < array.length(); i++) {
+                                    JSONObject event = array.getJSONObject(i);
+                                    String home = event.getString("strHomeTeam");
+                                    String away = event.getString("strAwayTeam");
+                                    String date = event.getString("dateEvent");
+                                    String homeScore = event.getString("intHomeScore");
+                                    String awayScore = event.getString("intAwayScore");
+                                    String homeGoalDetails = event.getString("strHomeGoalDetails");
+                                    String awayGoalDetails = event.getString("strAwayGoalDetails");
+                                    String homeTeamId = event.getString("idHomeTeam");
+                                    String awayTeamId = event.getString("idAwayTeam");
+                                    if (home.toLowerCase().contains(text) || away.toLowerCase().contains(text) || date.toLowerCase().contains(text) || homeScore.toLowerCase().contains(text) || awayScore.toLowerCase().contains(text)) {
+                                        Bundle bundle = new Bundle();
+                                        bundle.putString("home", home);
+                                        bundle.putString("away", away);
+                                        bundle.putString("when", date);
+                                        bundle.putString("homeScore", homeScore);
+                                        bundle.putString("awayScore", awayScore);
+                                        bundle.putString("homeGoalDetails", homeGoalDetails);
+                                        bundle.putString("awayGoalDeails", awayGoalDetails);
+                                        bundle.putString("idHomeTeam", homeTeamId);
+                                        bundle.putString("idAwayTeam", awayTeamId);
+                                        MatchFragment fragment = new MatchFragment(queue);
+                                        fragment.setArguments(bundle);
+                                        if (rightCol >= leftCol) {
+                                            fragmentTransaction.add(R.id.layout_col_left, fragment);
+                                        }else if (leftCol > rightCol){
+                                            fragmentTransaction.add(R.id.layout_col_right, fragment);
+                                        }
+                                    }
+
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
                             int leftCol = 0;
                             int rightCol = 1;
-                            for (int i = 0; i < array.length(); i++) {
-                                JSONObject event = array.getJSONObject(i);
-                                String home = event.getString("strHomeTeam");
-                                String away = event.getString("strAwayTeam");
-                                String date = event.getString("dateEvent");
-                                String homeScore = event.getString("intHomeScore");
-                                String awayScore = event.getString("intAwayScore");
-                                String homeGoalDetails = event.getString("strHomeGoalDetails");
-                                String awayGoalDetails = event.getString("strAwayGoalDetails");
-                                String homeTeamId = event.getString("idHomeTeam");
-                                String awayTeamId = event.getString("idAwayTeam");
+                            List<Schedule> schedules = db.allSchedule();
+                            for (int i = 0; i < schedules.size(); i++) {
+                                String home = schedules.get(i).getHome();
+                                String away = schedules.get(i).getAway();
+                                String date = schedules.get(i).getDate();
+                                String homeScore = schedules.get(i).getHomeScore();
+                                String awayScore = schedules.get(i).getAwayScore();
+                                String homeGoalDetails = schedules.get(i).getGoalHomeDetails();
+                                String awayGoalDetails = schedules.get(i).getGoalHomeDetails();
+                                String homeTeamId = schedules.get(i).getHomeTeamId();
+                                String awayTeamId = schedules.get(i).getAwayTeamId();
                                 if (home.toLowerCase().contains(text) || away.toLowerCase().contains(text) || date.toLowerCase().contains(text) || homeScore.toLowerCase().contains(text) || awayScore.toLowerCase().contains(text)) {
                                     Bundle bundle = new Bundle();
                                     bundle.putString("home", home);
@@ -326,48 +364,10 @@ public class MainActivity extends AppCompatActivity {
                                 }
 
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        int leftCol = 0;
-                        int rightCol = 1;
-                        List<Schedule> schedules = db.allSchedule();
-                        for (int i = 0; i < schedules.size(); i++) {
-                            String home = schedules.get(i).getHome();
-                            String away = schedules.get(i).getAway();
-                            String date = schedules.get(i).getDate();
-                            String homeScore = schedules.get(i).getHomeScore();
-                            String awayScore = schedules.get(i).getAwayScore();
-                            String homeGoalDetails = schedules.get(i).getGoalHomeDetails();
-                            String awayGoalDetails = schedules.get(i).getGoalHomeDetails();
-                            String homeTeamId = schedules.get(i).getHomeTeamId();
-                            String awayTeamId = schedules.get(i).getAwayTeamId();
-                            if (home.toLowerCase().contains(text) || away.toLowerCase().contains(text) || date.toLowerCase().contains(text) || homeScore.toLowerCase().contains(text) || awayScore.toLowerCase().contains(text)) {
-                                Bundle bundle = new Bundle();
-                                bundle.putString("home", home);
-                                bundle.putString("away", away);
-                                bundle.putString("when", date);
-                                bundle.putString("homeScore", homeScore);
-                                bundle.putString("awayScore", awayScore);
-                                bundle.putString("homeGoalDetails", homeGoalDetails);
-                                bundle.putString("awayGoalDeails", awayGoalDetails);
-                                bundle.putString("idHomeTeam", homeTeamId);
-                                bundle.putString("idAwayTeam", awayTeamId);
-                                MatchFragment fragment = new MatchFragment(queue);
-                                fragment.setArguments(bundle);
-                                if (rightCol >= leftCol) {
-                                    fragmentTransaction.add(R.id.layout_col_left, fragment);
-                                }else if (leftCol > rightCol){
-                                    fragmentTransaction.add(R.id.layout_col_right, fragment);
-                                }
-                            }
 
                         }
-
                     }
-                }
-                fragmentTransaction.commit();
+                    fragmentTransaction.commit();
             }
 
             @Override
@@ -375,12 +375,20 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        }
+
     }
     @Override
     public void onConfigurationChanged(Configuration newConfig){
         super.onConfigurationChanged(newConfig);
 
     }
-
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        // Save UI state changes to the savedInstanceState.
+        // This bundle will be passed to onCreate if the process is
+        // killed and restarted.
+        // etc.
+    }
 
 }
