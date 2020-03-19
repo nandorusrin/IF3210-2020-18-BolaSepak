@@ -49,41 +49,42 @@ public class ScheduleDetails extends AppCompatActivity {
             home = intent.getStringExtra("home");
             away = intent.getStringExtra("away");
             when = intent.getStringExtra("date");
-            homeScore = intent.getStringExtra("homeScore");
-            awayScore = intent.getStringExtra("awayScore");
+            LinearLayout linearLayout1 = (LinearLayout) findViewById(R.id.layout_home_score);
+            LinearLayout linearLayout2 = (LinearLayout) findViewById(R.id.layout_away_score);
+            if (homeScore != null) {
+                homeScore = intent.getStringExtra("homeScore");
+                awayScore = intent.getStringExtra("awayScore");
+                String[] homeGoalDetails = intent.getStringArrayExtra("homeGoalDetails");
+                String[] awayGoalDetails = intent.getStringArrayExtra("awayGoalDetails");
+                textView2.setText(homeScore);
+                textView3.setText(awayScore);
+                TextView textView4 = new TextView(this);
+                linearLayout1.addView(textView4);
+                textView4.setText(homeScore);
+                for (int i = 0; i < homeGoalDetails.length; i++){
+                    TextView textView1 = new TextView(this);
+                    textView1.setText(homeGoalDetails[i]);
+                    LinearLayout linearLayout = (LinearLayout) findViewById(R.id.layout_home_score);
+                    linearLayout.addView(textView1);
+                }
+                for (int i = 0; i < awayGoalDetails.length; i++){
+                    TextView textView1 = new TextView(this);
+                    textView1.setText(awayGoalDetails[i]);
+                    LinearLayout linearLayout = (LinearLayout) findViewById(R.id.layout_away_score);
+                    linearLayout.addView(textView1);
+                }
+            }
             idHomeTeam = intent.getStringExtra("idHomeTeam");
             idAwayTeam = intent.getStringExtra("idAwayTeam");
-            String[] homeGoalDetails = intent.getStringArrayExtra("homeGoalDetails");
-            String[] awayGoalDetails = intent.getStringArrayExtra("awayGoalDetails");
             textView6.setText(home);
             textView7.setText(away);
             textView.setText(when);
-            textView2.setText(homeScore);
-            textView3.setText(awayScore);
-            LinearLayout linearLayout1 = (LinearLayout) findViewById(R.id.layout_home_score);
-            TextView textView4 = new TextView(this);
-            textView4.setText(homeScore);
-            linearLayout1.addView(textView4);
-            LinearLayout linearLayout2 = (LinearLayout) findViewById(R.id.layout_away_score);
             TextView textView5 = new TextView(this);
             textView5.setText(awayScore);
             linearLayout2.addView(textView5);
-            for (int i = 0; i < homeGoalDetails.length; i++){
-                TextView textView1 = new TextView(this);
-                textView1.setText(homeGoalDetails[i]);
-                LinearLayout linearLayout = (LinearLayout) findViewById(R.id.layout_home_score);
-                linearLayout.addView(textView1);
-            }
-            for (int i = 0; i < awayGoalDetails.length; i++){
-                TextView textView1 = new TextView(this);
-                textView1.setText(awayGoalDetails[i]);
-                LinearLayout linearLayout = (LinearLayout) findViewById(R.id.layout_away_score);
-                linearLayout.addView(textView1);
-            }
-
             final RequestQueue queue = Volley.newRequestQueue(this);
-            String urlHome = "https://thesportsdb.com/api/v1/json/1/lookupteam.php?id=" + idHomeTeam;
-            String urlAway = "https://thesportsdb.com/api/v1/json/1/lookupteam.php?id=" + idAwayTeam;
+            String urlHome = "https://134.209.97.218:5050/api/v1/json/1/lookupteam.php?id=" + idHomeTeam;
+            String urlAway = "https://134.209.97.218:5050/api/v1/json/1/lookupteam.php?id=" + idAwayTeam;
             String urlWeather = "http://api.openweathermap.org/data/2.5/weather?q=" + idHomeTeam+ "&appid=4eb4a3899792b9b411d4388ea0af6916";
             // Request for home team logo
             JsonObjectRequest homeTeamObject = new JsonObjectRequest(Request.Method.GET, urlHome, null, new Response.Listener<JSONObject>() {
@@ -140,7 +141,7 @@ public class ScheduleDetails extends AppCompatActivity {
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Log.d("help", error.getMessage());
+                            //Log.d("help", error.getMessage());
                         }
                     }
             );

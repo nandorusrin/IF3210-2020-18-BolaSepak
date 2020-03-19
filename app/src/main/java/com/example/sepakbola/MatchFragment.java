@@ -38,6 +38,21 @@ public class MatchFragment extends Fragment {
     private String awayGoalDetails;
     private String idHomeTeam;
     private String idAwayTeam;
+    private RequestQueue requestQueue;
+
+    public MatchFragment(RequestQueue _requestQueue){
+        requestQueue = _requestQueue;
+    }
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -46,14 +61,16 @@ public class MatchFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent =  new Intent(getActivity(), ScheduleDetails.class);
-                String[] homeGoals = homeGoalDetails.split(";");
-                String[] awayGoals = awayGoalDetails.split(";");
-                intent.putExtra("homeGoalDetails", homeGoals);
-                intent.putExtra("awayGoalDetails",awayGoals);
+                if (homeGoalDetails != null) {
+                    String[] homeGoals = homeGoalDetails.split(";");
+                    String[] awayGoals = awayGoalDetails.split(";");
+                    intent.putExtra("homeScore", homeScore);
+                    intent.putExtra("awayScore", awayScore);
+                    intent.putExtra("homeGoalDetails", homeGoals);
+                    intent.putExtra("awayGoalDetails",awayGoals);
+                }
                 intent.putExtra("home", home);
                 intent.putExtra("away",away);
-                intent.putExtra("homeScore", homeScore);
-                intent.putExtra("awayScore",awayScore);
                 intent.putExtra("date", when);
                 intent.putExtra("idHomeTeam", idHomeTeam);
                 intent.putExtra("idAwayTeam", idAwayTeam);
@@ -68,13 +85,15 @@ public class MatchFragment extends Fragment {
         final ImageView imageView3 = (ImageView) view.findViewById(R.id.imageView3);
         final ImageView imageView4 = (ImageView) view.findViewById(R.id.imageView4);
         if (getArguments() != null) {
+            if (getArguments().getString("homeGoalDetails") != null){
+                homeScore = getArguments().getString("homeScore");
+                awayScore = getArguments().getString("awayScore");
+                homeGoalDetails = getArguments().getString("homeGoalDetails");
+                awayGoalDetails = getArguments().getString("awayGoalDetails");
+            }
             home = getArguments().getString("home");
             away = getArguments().getString("away");
             when = getArguments().getString("when");
-            homeScore = getArguments().getString("homeScore");
-            awayScore = getArguments().getString("awayScore");
-            homeGoalDetails = getArguments().getString("homeGoalDetails");
-            awayGoalDetails = getArguments().getString("awayGoalDetails");
             idHomeTeam = getArguments().getString("idHomeTeam");
             idAwayTeam = getArguments().getString("idAwayTeam");
             textView6.setText(home);
@@ -85,7 +104,6 @@ public class MatchFragment extends Fragment {
             ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
             if (connectivityManager != null) {
                 final boolean connected = (connectivityManager.getActiveNetwork() != null);
-                final RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
                 if (connected) {
                     String urlHome = "https://thesportsdb.com/api/v1/json/1/lookupteam.php?id=" + idHomeTeam;
                     String urlAway = "https://thesportsdb.com/api/v1/json/1/lookupteam.php?id=" + idAwayTeam;
