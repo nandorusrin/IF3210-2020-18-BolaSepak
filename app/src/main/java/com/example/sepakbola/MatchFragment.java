@@ -64,7 +64,7 @@ public class MatchFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent =  new Intent(getActivity(), ScheduleDetails.class);
-                if (homeGoalDetails != null) {
+                if (homeGoalDetails != null && awayGoalDetails != null) {
                     String[] homeGoals = homeGoalDetails.split(";");
                     String[] awayGoals = awayGoalDetails.split(";");
                     intent.putExtra("homeScore", homeScore);

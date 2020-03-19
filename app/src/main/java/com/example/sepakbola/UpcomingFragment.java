@@ -60,7 +60,7 @@ public class UpcomingFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         scheduleList = new ArrayList<>();
-        final RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        final RequestQueue requestQueue = Volley.newRequestQueue(this.getActivity());
 
         Bundle bundle = getArguments();
         String idHomeTeam = bundle.getString("idHomeTeam");

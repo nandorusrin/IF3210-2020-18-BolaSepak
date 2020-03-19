@@ -290,21 +290,62 @@ public class MainActivity extends AppCompatActivity {
                     getSupportFragmentManager().beginTransaction().remove(fragment).commit();
                 }
                     if (text != "" && array != null) {
-                        if (connected) {
-                            try {
+                        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                            if (connected) {
+                                try {
+                                    int leftCol = 0;
+                                    int rightCol = 1;
+                                    for (int i = 0; i < array.length(); i++) {
+                                        JSONObject event = array.getJSONObject(i);
+                                        String home = event.getString("strHomeTeam");
+                                        String away = event.getString("strAwayTeam");
+                                        String date = event.getString("dateEvent");
+                                        String homeScore = event.getString("intHomeScore");
+                                        String awayScore = event.getString("intAwayScore");
+                                        String homeGoalDetails = event.getString("strHomeGoalDetails");
+                                        String awayGoalDetails = event.getString("strAwayGoalDetails");
+                                        String homeTeamId = event.getString("idHomeTeam");
+                                        String awayTeamId = event.getString("idAwayTeam");
+                                        if (home.toLowerCase().contains(text) || away.toLowerCase().contains(text) || date.toLowerCase().contains(text) || homeScore.toLowerCase().contains(text) || awayScore.toLowerCase().contains(text)) {
+                                            Bundle bundle = new Bundle();
+                                            bundle.putString("home", home);
+                                            bundle.putString("away", away);
+                                            bundle.putString("when", date);
+                                            bundle.putString("homeScore", homeScore);
+                                            bundle.putString("awayScore", awayScore);
+                                            bundle.putString("homeGoalDetails", homeGoalDetails);
+                                            bundle.putString("awayGoalDeails", awayGoalDetails);
+                                            bundle.putString("idHomeTeam", homeTeamId);
+                                            bundle.putString("idAwayTeam", awayTeamId);
+                                            MatchFragment fragment = new MatchFragment(queue);
+                                            fragment.setArguments(bundle);
+                                            if (rightCol >= leftCol) {
+                                                fragmentTransaction.add(R.id.layout_col_left, fragment);
+                                                leftCol++;
+                                            }else if (leftCol > rightCol){
+                                                rightCol++;
+                                                fragmentTransaction.add(R.id.layout_col_right, fragment);
+                                            }
+                                        }
+
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
                                 int leftCol = 0;
                                 int rightCol = 1;
-                                for (int i = 0; i < array.length(); i++) {
-                                    JSONObject event = array.getJSONObject(i);
-                                    String home = event.getString("strHomeTeam");
-                                    String away = event.getString("strAwayTeam");
-                                    String date = event.getString("dateEvent");
-                                    String homeScore = event.getString("intHomeScore");
-                                    String awayScore = event.getString("intAwayScore");
-                                    String homeGoalDetails = event.getString("strHomeGoalDetails");
-                                    String awayGoalDetails = event.getString("strAwayGoalDetails");
-                                    String homeTeamId = event.getString("idHomeTeam");
-                                    String awayTeamId = event.getString("idAwayTeam");
+                                List<Schedule> schedules = db.allSchedule();
+                                for (int i = 0; i < schedules.size(); i++) {
+                                    String home = schedules.get(i).getHome();
+                                    String away = schedules.get(i).getAway();
+                                    String date = schedules.get(i).getDate();
+                                    String homeScore = schedules.get(i).getHomeScore();
+                                    String awayScore = schedules.get(i).getAwayScore();
+                                    String homeGoalDetails = schedules.get(i).getGoalHomeDetails();
+                                    String awayGoalDetails = schedules.get(i).getGoalHomeDetails();
+                                    String homeTeamId = schedules.get(i).getHomeTeamId();
+                                    String awayTeamId = schedules.get(i).getAwayTeamId();
                                     if (home.toLowerCase().contains(text) || away.toLowerCase().contains(text) || date.toLowerCase().contains(text) || homeScore.toLowerCase().contains(text) || awayScore.toLowerCase().contains(text)) {
                                         Bundle bundle = new Bundle();
                                         bundle.putString("home", home);
@@ -319,8 +360,8 @@ public class MainActivity extends AppCompatActivity {
                                         MatchFragment fragment = new MatchFragment(queue);
                                         fragment.setArguments(bundle);
                                         if (rightCol >= leftCol) {
-                                            fragmentTransaction.add(R.id.layout_col_left, fragment);
                                             leftCol++;
+                                            fragmentTransaction.add(R.id.layout_col_left, fragment);
                                         }else if (leftCol > rightCol){
                                             rightCol++;
                                             fragmentTransaction.add(R.id.layout_col_right, fragment);
@@ -328,47 +369,70 @@ public class MainActivity extends AppCompatActivity {
                                     }
 
                                 }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+
                             }
-                        } else {
-                            int leftCol = 0;
-                            int rightCol = 1;
-                            List<Schedule> schedules = db.allSchedule();
-                            for (int i = 0; i < schedules.size(); i++) {
-                                String home = schedules.get(i).getHome();
-                                String away = schedules.get(i).getAway();
-                                String date = schedules.get(i).getDate();
-                                String homeScore = schedules.get(i).getHomeScore();
-                                String awayScore = schedules.get(i).getAwayScore();
-                                String homeGoalDetails = schedules.get(i).getGoalHomeDetails();
-                                String awayGoalDetails = schedules.get(i).getGoalHomeDetails();
-                                String homeTeamId = schedules.get(i).getHomeTeamId();
-                                String awayTeamId = schedules.get(i).getAwayTeamId();
-                                if (home.toLowerCase().contains(text) || away.toLowerCase().contains(text) || date.toLowerCase().contains(text) || homeScore.toLowerCase().contains(text) || awayScore.toLowerCase().contains(text)) {
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString("home", home);
-                                    bundle.putString("away", away);
-                                    bundle.putString("when", date);
-                                    bundle.putString("homeScore", homeScore);
-                                    bundle.putString("awayScore", awayScore);
-                                    bundle.putString("homeGoalDetails", homeGoalDetails);
-                                    bundle.putString("awayGoalDeails", awayGoalDetails);
-                                    bundle.putString("idHomeTeam", homeTeamId);
-                                    bundle.putString("idAwayTeam", awayTeamId);
-                                    MatchFragment fragment = new MatchFragment(queue);
-                                    fragment.setArguments(bundle);
-                                    if (rightCol >= leftCol) {
-                                        leftCol++;
-                                        fragmentTransaction.add(R.id.layout_col_left, fragment);
-                                    }else if (leftCol > rightCol){
-                                        rightCol++;
-                                        fragmentTransaction.add(R.id.layout_col_right, fragment);
+                        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                            if (connected) {
+                                try {
+                                    for (int i = 0; i < array.length(); i++) {
+                                        JSONObject event = array.getJSONObject(i);
+                                        String home = event.getString("strHomeTeam");
+                                        String away = event.getString("strAwayTeam");
+                                        String date = event.getString("dateEvent");
+                                        String homeScore = event.getString("intHomeScore");
+                                        String awayScore = event.getString("intAwayScore");
+                                        String homeGoalDetails = event.getString("strHomeGoalDetails");
+                                        String awayGoalDetails = event.getString("strAwayGoalDetails");
+                                        String homeTeamId = event.getString("idHomeTeam");
+                                        String awayTeamId = event.getString("idAwayTeam");
+                                        if (home.toLowerCase().contains(text) || away.toLowerCase().contains(text) || date.toLowerCase().contains(text) || homeScore.toLowerCase().contains(text) || awayScore.toLowerCase().contains(text)) {
+                                            Bundle bundle = new Bundle();
+                                            bundle.putString("home", home);
+                                            bundle.putString("away", away);
+                                            bundle.putString("when", date);
+                                            bundle.putString("homeScore", homeScore);
+                                            bundle.putString("awayScore", awayScore);
+                                            bundle.putString("homeGoalDetails", homeGoalDetails);
+                                            bundle.putString("awayGoalDeails", awayGoalDetails);
+                                            bundle.putString("idHomeTeam", homeTeamId);
+                                            bundle.putString("idAwayTeam", awayTeamId);
+                                            MatchFragment fragment = new MatchFragment(queue);
+                                            fragment.setArguments(bundle);
+                                            fragmentTransaction.add(R.id.layout_home, fragment);
+                                        }
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                List<Schedule> schedules = db.allSchedule();
+                                for (int i = 0; i < schedules.size(); i++) {
+                                    String home = schedules.get(i).getHome();
+                                    String away = schedules.get(i).getAway();
+                                    String date = schedules.get(i).getDate();
+                                    String homeScore = schedules.get(i).getHomeScore();
+                                    String awayScore = schedules.get(i).getAwayScore();
+                                    String homeGoalDetails = schedules.get(i).getGoalHomeDetails();
+                                    String awayGoalDetails = schedules.get(i).getGoalHomeDetails();
+                                    String homeTeamId = schedules.get(i).getHomeTeamId();
+                                    String awayTeamId = schedules.get(i).getAwayTeamId();
+                                    if (home.toLowerCase().contains(text) || away.toLowerCase().contains(text) || date.toLowerCase().contains(text) || homeScore.toLowerCase().contains(text) || awayScore.toLowerCase().contains(text)) {
+                                        Bundle bundle = new Bundle();
+                                        bundle.putString("home", home);
+                                        bundle.putString("away", away);
+                                        bundle.putString("when", date);
+                                        bundle.putString("homeScore", homeScore);
+                                        bundle.putString("awayScore", awayScore);
+                                        bundle.putString("homeGoalDetails", homeGoalDetails);
+                                        bundle.putString("awayGoalDeails", awayGoalDetails);
+                                        bundle.putString("idHomeTeam", homeTeamId);
+                                        bundle.putString("idAwayTeam", awayTeamId);
+                                        MatchFragment fragment = new MatchFragment(queue);
+                                        fragment.setArguments(bundle);
+                                        fragmentTransaction.add(R.id.layout_home, fragment);
                                     }
                                 }
-
                             }
-
                         }
                     }
                     fragmentTransaction.commit();
