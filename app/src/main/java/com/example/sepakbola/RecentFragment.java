@@ -12,6 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,9 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RecentFragment extends Fragment {
-    View view;
-    RecyclerView recyclerView;
-    List<Schedule> scheduleList;
+    private List<Schedule> scheduleList;
 
     public RecentFragment() {
     }
@@ -41,10 +41,10 @@ public class RecentFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.recent_fragment, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recent_recyclerview);
-        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(getContext(), scheduleList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        View view = inflater.inflate(R.layout.recent_fragment, container, false);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recent_recyclerview);
+        RecentFragment.RecyclerViewAdapter recyclerViewAdapter = new RecentFragment.RecyclerViewAdapter(getContext(), scheduleList);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
         recyclerView.setAdapter(recyclerViewAdapter);
         return view;
     }
@@ -53,21 +53,24 @@ public class RecentFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         scheduleList = new ArrayList<>();
-        String idHomeTeam = getArguments().getString("idHomeTeam");
-        String urlRecentEvents = "https://www.thesportsdb.com/api/v1/json/1/eventslast.php?id=" + idHomeTeam;
+        final RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+
+        Bundle bundle = getArguments();
+        String idHomeTeam = bundle.getString("idHomeTeam");
+        String urlRecentEvents = "http://134.209.97.218:5050/api/v1/json/1/eventslast.php?id=" + idHomeTeam;
         ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         final boolean connected = (connectivityManager.getActiveNetwork() != null);
         if (connected) {
-            final RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
             JsonObjectRequest recentEventsObject = new JsonObjectRequest(Request.Method.GET, urlRecentEvents, null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
 //                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 //                    final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     try {
-                        JSONArray recentEventsArr = response.getJSONArray("events");
+                        JSONArray recentEventsArr = response.getJSONArray("results");
                         for (int i = 0; i < recentEventsArr.length(); i++) {
                             JSONObject event = recentEventsArr.getJSONObject(i);
+                            System.out.println(event);
                             String home = event.getString("strHomeTeam");
                             String away = event.getString("strAwayTeam");
                             String date = event.getString("dateEvent");
@@ -75,23 +78,24 @@ public class RecentFragment extends Fragment {
                             String awayScore = event.getString("intAwayScore");
                             String homeGoalDetails = event.getString("strHomeGoalDetails");
                             String awayGoalDetails = event.getString("strAwayGoalDetails");
-                            String homeId = event.getString("idHomeTeam");
-                            String awayId = event.getString("idAwayTeam");
-                            scheduleList.add(new Schedule(home, away, homeScore, awayScore, date, homeGoalDetails, awayGoalDetails, homeId, awayId));
-//                            Bundle bundle = new Bundle();
-//                            bundle.putString("home", home);
-//                            bundle.putString("away", away);
-//                            bundle.putString("when", date);
-//                            bundle.putString("homeScore", homeScore);
-//                            bundle.putString("awayScore", awayScore);
-//                            bundle.putString("homeGoalDetails", homeGoalDetails);
-//                            bundle.putString("awayGoalDetails", awayGoalDetails);
-//                            bundle.putString("idHomeTeam", homeTeamId);
-//                            bundle.putString("idAwayTeam", awayTeamId);
-//                            MatchFragment fragment = new MatchFragment();
-//                            fragment.setArguments(bundle);
-//                            fragmentTransaction.add(R.id.upcoming_recyclerview, fragment);
+                            String homeTeamId = event.getString("idHomeTeam");
+                            String awayTeamId = event.getString("idAwayTeam");
+                            scheduleList.add(new Schedule(home, away, homeScore, awayScore, date, homeGoalDetails, awayGoalDetails, homeTeamId, awayTeamId));
+                            Bundle bundle = new Bundle();
+                            bundle.putString("home", home);
+                            bundle.putString("away", away);
+                            bundle.putString("when", date);
+                            bundle.putString("homeScore", homeScore);
+                            bundle.putString("awayScore", awayScore);
+                            bundle.putString("homeGoalDetails", homeGoalDetails);
+                            bundle.putString("awayGoalDetails", awayGoalDetails);
+                            bundle.putString("idHomeTeam", homeTeamId);
+                            bundle.putString("idAwayTeam", awayTeamId);
+                            MatchFragment fragment = new MatchFragment();
+                            fragment.setArguments(bundle);
+//                            fragmentTransaction.add(R.id.recent_recyclerview, fragment);
                         }
+//                        fragmentTransaction.commit();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -104,6 +108,7 @@ public class RecentFragment extends Fragment {
             });
             requestQueue.add(recentEventsObject);
         }
+        System.out.println(scheduleList);
     }
 
     public static class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecentViewHolder> {
@@ -120,8 +125,7 @@ public class RecentFragment extends Fragment {
         public RecentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view;
             view = LayoutInflater.from(mContext).inflate(R.layout.match_fragment, parent, false);
-            RecentViewHolder recentViewHolder = new RecentViewHolder(view);
-            return recentViewHolder;
+            return new RecentViewHolder(view);
         }
 
         @Override
@@ -184,7 +188,7 @@ public class RecentFragment extends Fragment {
             return mData.size();
         }
 
-        public class RecentViewHolder extends RecyclerView.ViewHolder {
+        public static class RecentViewHolder extends RecyclerView.ViewHolder {
             private TextView home;
             private TextView away;
             private TextView when;

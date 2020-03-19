@@ -14,19 +14,17 @@
         android:layout_marginLeft="60dp"
         android:layout_marginTop="60dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_launcher_background" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/team_name"
-        android:layout_width="90dp"
+        android:layout_width="wrap_content"
         android:layout_height="30dp"
         android:layout_marginTop="90dp"
         android:gravity="center"
-        android:text="Team A"
         android:textAlignment="center"
         android:textAllCaps="false"
-        android:textSize="24sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.116"
         app:layout_constraintStart_toEndOf="@+id/team_logo"

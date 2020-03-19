@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Debug;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -38,33 +39,15 @@ public class ScheduleDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule_details);
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         TextView textView6 = (TextView) findViewById(R.id.textView6);
         TextView textView7 = (TextView) findViewById(R.id.textView7);
         TextView textView = (TextView) findViewById(R.id.textView);
         TextView textView2 = (TextView) findViewById(R.id.textView2);
         TextView textView3 = (TextView) findViewById(R.id.textView3);
         final ImageView imageView3 = (ImageView) findViewById(R.id.imageView3);
-        final RequestQueue queue = Volley.newRequestQueue(this);
-        imageView3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putString("idHomeTeam", idHomeTeam);
-                MatchFragment fragment = new MatchFragment(queue);
-                fragment.setArguments(bundle);
-            }
-        });
         final ImageView imageView4 = (ImageView) findViewById(R.id.imageView4);
-        imageView4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putString("idHomeTeam", idAwayTeam);
-                MatchFragment fragment = new MatchFragment(queue);
-                fragment.setArguments(bundle);
-            }
-        });
+        final RequestQueue queue = Volley.newRequestQueue(this);
         if (intent != null) {
             home = intent.getStringExtra("home");
             away = intent.getStringExtra("away");
@@ -172,5 +155,23 @@ public class ScheduleDetails extends AppCompatActivity {
             queue.add(awayTeamObject);
             queue.add(jsonObjectRequest);
         }
+        imageView3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(v.getContext(), TeamDetails.class);
+                intent1.putExtra("idHomeTeam", idHomeTeam);
+                intent1.putExtra("home", home);
+                startActivity(intent1);
+            }
+        });
+        imageView4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(v.getContext(), TeamDetails.class);
+                intent1.putExtra("idHomeTeam", idAwayTeam);
+                intent1.putExtra("home", away);
+                startActivity(intent1);
+            }
+        });
     }
 }

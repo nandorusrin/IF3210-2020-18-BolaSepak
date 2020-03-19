@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,9 +37,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UpcomingFragment extends Fragment {
-    View view;
-    RecyclerView recyclerView;
-    List<Schedule> scheduleList;
+    private View view;
+    private RecyclerView recyclerView;
+    private UpcomingFragment.RecyclerViewAdapter recyclerViewAdapter;
+    private List<Schedule> scheduleList;
 
     public UpcomingFragment() {
     }
@@ -48,8 +50,8 @@ public class UpcomingFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.upcoming_fragment, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.upcoming_recyclerview);
-        RecentFragment.RecyclerViewAdapter recyclerViewAdapter = new RecentFragment.RecyclerViewAdapter(getContext(), scheduleList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerViewAdapter = new UpcomingFragment.RecyclerViewAdapter(getContext(), scheduleList);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
         recyclerView.setAdapter(recyclerViewAdapter);
         return view;
     }
@@ -58,12 +60,14 @@ public class UpcomingFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         scheduleList = new ArrayList<>();
-        String idHomeTeam = getArguments().getString("idHomeTeam");
-        String urlUpcomingEvents = "https://www.thesportsdb.com/api/v1/json/1/eventsnext.php?id=" + idHomeTeam;
+        final RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+
+        Bundle bundle = getArguments();
+        String idHomeTeam = bundle.getString("idHomeTeam");
+        String urlUpcomingEvents = "http://134.209.97.218:5050/api/v1/json/1/eventsnext.php?id=" + idHomeTeam;
         ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         final boolean connected = (connectivityManager.getActiveNetwork() != null);
         if (connected) {
-            final RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
             JsonObjectRequest upcomingEventsObject = new JsonObjectRequest(Request.Method.GET, urlUpcomingEvents, null, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
@@ -73,6 +77,7 @@ public class UpcomingFragment extends Fragment {
                         JSONArray upcomingEventsArr = response.getJSONArray("events");
                         for (int i = 0; i < upcomingEventsArr.length(); i++) {
                             JSONObject event = upcomingEventsArr.getJSONObject(i);
+                            System.out.println(event);
                             String home = event.getString("strHomeTeam");
                             String away = event.getString("strAwayTeam");
                             String date = event.getString("dateEvent");
@@ -80,23 +85,24 @@ public class UpcomingFragment extends Fragment {
                             String awayScore = event.getString("intAwayScore");
                             String homeGoalDetails = event.getString("strHomeGoalDetails");
                             String awayGoalDetails = event.getString("strAwayGoalDetails");
-                            String homeId = event.getString("idHomeTeam");
-                            String awayId = event.getString("idAwayTeam");
-                            scheduleList.add(new Schedule(home, away, homeScore, awayScore, date, homeGoalDetails, awayGoalDetails, homeId, awayId));
-//                            Bundle bundle = new Bundle();
-//                            bundle.putString("home", home);
-//                            bundle.putString("away", away);
-//                            bundle.putString("when", date);
-//                            bundle.putString("homeScore", homeScore);
-//                            bundle.putString("awayScore", awayScore);
-//                            bundle.putString("homeGoalDetails", homeGoalDetails);
-//                            bundle.putString("awayGoalDetails", awayGoalDetails);
-//                            bundle.putString("idHomeTeam", homeTeamId);
-//                            bundle.putString("idAwayTeam", awayTeamId);
-//                            MatchFragment fragment = new MatchFragment();
-//                            fragment.setArguments(bundle);
+                            String homeTeamId = event.getString("idHomeTeam");
+                            String awayTeamId = event.getString("idAwayTeam");
+                            scheduleList.add(new Schedule(home, away, homeScore, awayScore, date, homeGoalDetails, awayGoalDetails, homeTeamId, awayTeamId));
+                            Bundle bundle = new Bundle();
+                            bundle.putString("home", home);
+                            bundle.putString("away", away);
+                            bundle.putString("when", date);
+                            bundle.putString("homeScore", homeScore);
+                            bundle.putString("awayScore", awayScore);
+                            bundle.putString("homeGoalDetails", homeGoalDetails);
+                            bundle.putString("awayGoalDetails", awayGoalDetails);
+                            bundle.putString("idHomeTeam", homeTeamId);
+                            bundle.putString("idAwayTeam", awayTeamId);
+                            MatchFragment fragment = new MatchFragment();
+                            fragment.setArguments(bundle);
 //                            fragmentTransaction.add(R.id.upcoming_recyclerview, fragment);
                         }
+//                        fragmentTransaction.commit();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -109,6 +115,7 @@ public class UpcomingFragment extends Fragment {
             });
             requestQueue.add(upcomingEventsObject);
         }
+        System.out.println(scheduleList);
     }
 
     public static class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.UpcomingViewHolder> {
@@ -125,8 +132,7 @@ public class UpcomingFragment extends Fragment {
         public UpcomingViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view;
             view = LayoutInflater.from(mContext).inflate(R.layout.match_fragment, parent, false);
-            UpcomingViewHolder upcomingViewHolder = new UpcomingViewHolder(view);
-            return upcomingViewHolder;
+            return new UpcomingViewHolder(view);
         }
 
         @Override
@@ -189,7 +195,7 @@ public class UpcomingFragment extends Fragment {
             return mData.size();
         }
 
-        public class UpcomingViewHolder extends RecyclerView.ViewHolder {
+        public static class UpcomingViewHolder extends RecyclerView.ViewHolder {
             private TextView home;
             private TextView away;
             private TextView when;

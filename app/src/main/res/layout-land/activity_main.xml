@@ -27,7 +27,6 @@
             android:ems="10"
             android:inputType="textPersonName"
             android:padding="12dp"
-            android:text="Name"
             tools:text="Search..." />
 
         <LinearLayout
@@ -39,12 +38,16 @@
                 android:id="@+id/layout_col_left"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:orientation="vertical"></LinearLayout>
+                android:orientation="vertical">
+
+            </LinearLayout>
             <LinearLayout
                 android:id="@+id/layout_col_right"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:orientation="vertical"></LinearLayout>
+                android:orientation="vertical">
+
+            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>
