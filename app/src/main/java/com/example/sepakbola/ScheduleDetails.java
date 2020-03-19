@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -44,8 +45,26 @@ public class ScheduleDetails extends AppCompatActivity {
         TextView textView2 = (TextView) findViewById(R.id.textView2);
         TextView textView3 = (TextView) findViewById(R.id.textView3);
         final ImageView imageView3 = (ImageView) findViewById(R.id.imageView3);
+        imageView3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString("idHomeTeam", idHomeTeam);
+                MatchFragment fragment = new MatchFragment();
+                fragment.setArguments(bundle);
+            }
+        });
         final ImageView imageView4 = (ImageView) findViewById(R.id.imageView4);
-        if (intent != null){
+        imageView4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString("idHomeTeam", idAwayTeam);
+                MatchFragment fragment = new MatchFragment();
+                fragment.setArguments(bundle);
+            }
+        });
+        if (intent != null) {
             home = intent.getStringExtra("home");
             away = intent.getStringExtra("away");
             when = intent.getStringExtra("date");
@@ -68,13 +87,13 @@ public class ScheduleDetails extends AppCompatActivity {
             TextView textView5 = new TextView(this);
             textView5.setText(awayScore);
             linearLayout2.addView(textView5);
-            for (int i = 0; i < homeGoalDetails.length; i++){
+            for (int i = 0; i < homeGoalDetails.length; i++) {
                 TextView textView1 = new TextView(this);
                 textView1.setText(homeGoalDetails[i]);
                 LinearLayout linearLayout = (LinearLayout) findViewById(R.id.layout_home_score);
                 linearLayout.addView(textView1);
             }
-            for (int i = 0; i < awayGoalDetails.length; i++){
+            for (int i = 0; i < awayGoalDetails.length; i++) {
                 TextView textView1 = new TextView(this);
                 textView1.setText(awayGoalDetails[i]);
                 LinearLayout linearLayout = (LinearLayout) findViewById(R.id.layout_away_score);
@@ -84,7 +103,7 @@ public class ScheduleDetails extends AppCompatActivity {
             final RequestQueue queue = Volley.newRequestQueue(this);
             String urlHome = "https://thesportsdb.com/api/v1/json/1/lookupteam.php?id=" + idHomeTeam;
             String urlAway = "https://thesportsdb.com/api/v1/json/1/lookupteam.php?id=" + idAwayTeam;
-            String urlWeather = "http://api.openweathermap.org/data/2.5/weather?q=" + idHomeTeam+ "&appid=4eb4a3899792b9b411d4388ea0af6916";
+            String urlWeather = "http://api.openweathermap.org/data/2.5/weather?q=" + idHomeTeam + "&appid=4eb4a3899792b9b411d4388ea0af6916";
             // Request for home team logo
             JsonObjectRequest homeTeamObject = new JsonObjectRequest(Request.Method.GET, urlHome, null, new Response.Listener<JSONObject>() {
                 @Override
@@ -99,7 +118,7 @@ public class ScheduleDetails extends AppCompatActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.d("VolleyError", "onErrorResponse: " + error);
+                    error.printStackTrace();
                 }
             });
             // Request for away team logo
@@ -116,7 +135,7 @@ public class ScheduleDetails extends AppCompatActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.d("VolleyError", "onErrorResponse: " + error);
+                    error.printStackTrace();
                 }
             });
             // Request for weather
@@ -140,7 +159,7 @@ public class ScheduleDetails extends AppCompatActivity {
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Log.d("help", error.getMessage());
+                            error.printStackTrace();
                         }
                     }
             );
