@@ -37,3 +37,14 @@ Terlihat bahwa penggunaan CPU resource mencapai angka yang sangat tinggi hanya u
 ![Setelah Optimisasi](/tuned.PNG)
 
 Terlihat bahwa ada perbedaan signifikan pada saat tombol ditekan.
+
+## Memory Optimization
+Optimisasi Memory usage yang dilakukan adalah dengan menggunakan RecyclerView untuk menampilkan match-match di main activity. Berikut ini adalah gambar dari memory profiler sebelum dan setelah dilakukan optimisasi:
+
+![Sebelum Optimisasi](/mem-before.png)
+
+Dapat dilihat pada gambar di atas bahwa memory yang digunakan saat aplikasi pertama kali dijalankan total berjumlah sekitar 55.3 MB saat sebelum menggunakan Recycler View.
+
+![Setelah Optimisasi](/mem-after.png)
+
+Lalu saat menggunakan Recycler View, memory yang digunakan saat awal aplikasi dijalankan berkurang, sehingga total memory yang digunakan berjumlah sekitar 44.4 MB.
