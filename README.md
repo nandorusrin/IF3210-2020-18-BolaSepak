@@ -27,3 +27,9 @@ bertanding.
 7. Bila perangkat tidak terkoneksi internet, aplikasi dapat menampilkan data
 pertandingan yang diambil dari cache.
 
+## CPU Optimization
+Salah satu optimisasi CPU yang dilakukan adalah pada saat aplikasi melakukan searching pada pemain sepak bola. Pada saat belum dijalankan optimisasi dan dilakukan pengetikan pada input field adalah:
+![Sebelum Optimisasi](/spike.png)
+Terlihat bahwa penggunaan CPU resource mencapai angka yang sangat tinggi hanya untuk penekanan 1 tombol pada searching. Hal ini disebabkan oleh pencarian yang tidak dioptimize. Aplikasi kami melakukan searching ke seluruh data tetapi tidak  menentukan batas maksimal untuk data yang ditampilkan yang menyebabkan bloking. Akhirnya kami memutuskan untuk mencantumkan 11 hasil teratas. Setelah tuning maka CPU profiler menampilkan gambar sebagai berikut.
+![Setelah Optimisasi](/tuned.png)
+Terlihat bahwa ada perbedaan signifikan pada saat tombol ditekan.
