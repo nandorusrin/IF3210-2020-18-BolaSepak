@@ -169,7 +169,11 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if (connected) {
                     try {
+                        int findCount = 0;
                         for (int i = 0; i < array.length(); i++) {
+                            if (findCount >= 11){
+                                break;
+                            }
                             JSONObject event = array.getJSONObject(i);
                             String home = event.getString("strHomeTeam");
                             String away = event.getString("strAwayTeam");
@@ -192,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
                                 MatchFragment fragment = new MatchFragment();
                                 fragment.setArguments(bundle);
                                 fragmentTransaction.add(R.id.layout_home, fragment);
+                                findCount++;
                             }
 
                         }
@@ -200,8 +205,12 @@ public class MainActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }else{
+                    int findCount = 0;
                     List<Schedule> schedules = db.allSchedule();
                     for (int i = 0; i < schedules.size(); i++){
+                        if (findCount >= 11){
+                            break;
+                        }
                         String home = schedules.get(i).getHome();
                         String away = schedules.get(i).getAway();
                         String date = schedules.get(i).getDate();
@@ -223,6 +232,7 @@ public class MainActivity extends AppCompatActivity {
                             MatchFragment fragment = new MatchFragment();
                             fragment.setArguments(bundle);
                             fragmentTransaction.add(R.id.layout_home, fragment);
+                            findCount++;
                         }
 
                     }

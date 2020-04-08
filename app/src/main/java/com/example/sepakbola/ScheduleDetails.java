@@ -78,7 +78,7 @@ public class ScheduleDetails extends AppCompatActivity {
             String url = "http://api.openweathermap.org/data/2.5/weather?q=" + idHomeTeam+ "&appid=4eb4a3899792b9b411d4388ea0af6916";
             final RequestQueue queue = Volley.newRequestQueue(this);
 
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+            /*JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                     Request.Method.GET,
                     url,
                     null,
@@ -102,7 +102,7 @@ public class ScheduleDetails extends AppCompatActivity {
                         }
                     }
             );
-            queue.add(jsonObjectRequest);
+            queue.add(jsonObjectRequest);*/
         }
     }
 }

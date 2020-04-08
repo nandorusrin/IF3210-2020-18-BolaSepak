@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class SQLiteDatabaseHandler extends SQLiteOpenHelper {
-    private static  final int DATABASE_VERSION = 3;
+    private static  final int DATABASE_VERSION = 5;
     private  static  final String DATABASE_NAME = "scheduleDB";
     private  static  final String TABLE_NAME = "schedule";
     private  static  final String KEY_ID = "id";
