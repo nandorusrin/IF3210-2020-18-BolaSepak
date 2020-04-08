@@ -4,6 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -32,16 +35,27 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private JSONArray array;
     private SQLiteDatabaseHandler db;
+    private List<Schedule> scheduleList = new ArrayList<>();
+    private RecyclerView recyclerView;
+    private ScheduleAdapter scheduleAdapter;
     String homeTeamId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        recyclerView = (RecyclerView) findViewById(R.id.layout_home);
+        scheduleAdapter = new ScheduleAdapter(this, scheduleList);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(scheduleAdapter);
+
         final RequestQueue queue = Volley.newRequestQueue(this);
         final String url = "https://www.thesportsdb.com/api/v1/json/1/eventsseason.php?id=4328&s=1415";
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -91,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
                                             }
                                         });
                                         Schedule schedule = new Schedule(home, away, homeScore, awayScore, date, homeGoalDetails, awayGoalDetails, homeTeamId);
+                                        scheduleList.add(schedule);
                                         db.insertData(schedule);
                                         if (i < 10) {
                                             Bundle bundle = new Bundle();
@@ -102,9 +117,9 @@ public class MainActivity extends AppCompatActivity {
                                             bundle.putString("homeGoalDetails", homeGoalDetails);
                                             bundle.putString("awayGoalDetails", awayGoalDetails);
                                             bundle.putString("idHomeTeam", homeTeamId);
-                                            MatchFragment fragment = new MatchFragment();
-                                            fragment.setArguments(bundle);
-                                            fragmentTransaction.add(R.id.layout_home, fragment);
+//                                            MatchFragment fragment = new MatchFragment();
+//                                            fragment.setArguments(bundle);
+//                                            fragmentTransaction.add(R.id.layout_home, fragment);
                                         }
 
                                     }
@@ -138,9 +153,9 @@ public class MainActivity extends AppCompatActivity {
                         bundle.putString("homeGoalDetails", schedules.get(i).getGoalHomeDetails());
                         bundle.putString("awayGoalDetails", schedules.get(i).getGoalAwayDetails());
                         bundle.putString("idHomeTeam", schedules.get(i).getHomeTeamId());
-                        MatchFragment fragment = new MatchFragment();
-                        fragment.setArguments(bundle);
-                        fragmentTransaction.add(R.id.layout_home, fragment);
+//                        MatchFragment fragment = new MatchFragment();
+//                        fragment.setArguments(bundle);
+//                        fragmentTransaction.add(R.id.layout_home, fragment);
                     }
                     fragmentTransaction.commit();
                 }
@@ -148,7 +163,6 @@ public class MainActivity extends AppCompatActivity {
             }
 
         }
-        setContentView(R.layout.activity_main);
         TextView textView = (TextView) findViewById(R.id.numberOfSteps);
         String txt = "Number of steps: " + Sensor.TYPE_STEP_COUNTER;
         textView.setText(txt);
@@ -193,9 +207,9 @@ public class MainActivity extends AppCompatActivity {
                                 bundle.putString("homeGoalDetails", homeGoalDetails);
                                 bundle.putString("awayGoalDeails", awayGoalDetails);
                                 bundle.putString("idHomeTeam", homeTeamId);
-                                MatchFragment fragment = new MatchFragment();
-                                fragment.setArguments(bundle);
-                                fragmentTransaction.add(R.id.layout_home, fragment);
+//                                MatchFragment fragment = new MatchFragment();
+//                                fragment.setArguments(bundle);
+//                                fragmentTransaction.add(R.id.layout_home, fragment);
                                 findCount++;
                             }
 
@@ -229,9 +243,9 @@ public class MainActivity extends AppCompatActivity {
                             bundle.putString("homeGoalDetails", homeGoalDetails);
                             bundle.putString("awayGoalDeails", awayGoalDetails);
                             bundle.putString("idHomeTeam", homeTeamId);
-                            MatchFragment fragment = new MatchFragment();
-                            fragment.setArguments(bundle);
-                            fragmentTransaction.add(R.id.layout_home, fragment);
+//                            MatchFragment fragment = new MatchFragment();
+//                            fragment.setArguments(bundle);
+//                            fragmentTransaction.add(R.id.layout_home, fragment);
                             findCount++;
                         }
 
